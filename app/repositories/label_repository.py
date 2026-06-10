@@ -43,3 +43,35 @@ class LabelRepository:
         self.db.delete(label)
         # self.db.flush()
         self.commit()
+
+    def list_ids_for_owner_subset(self, owner_id: id, ids: List[int]) -> List[int]:
+        if not ids:
+            return []
+
+        return self.db.exec(
+            select(Label.id).where(Label.owner_id == owner_id, Label.id.in_(set(ids)))
+        ).all()
+
+    def list_label_ids_for_note(self, note_id: int) -> List[int]:
+        return (
+            self.db.exec(
+                select(NoteLabelLink.label_id).where(NoteLabelLink.note_id == note_id)
+            )
+            .scalars()
+            .all()
+        )
+
+    def list_note_ids_by_label_ids(self, label_ids: List[int]) -> List[int]:
+
+        if not label_ids:
+            return []
+
+        return (
+            self.db.exec(
+                select(NoteLabelLink.note_id).where(
+                    NoteLabelLink.label_id.in_(label_ids)
+                )
+            )
+            .scalars()
+            .all()
+        )
