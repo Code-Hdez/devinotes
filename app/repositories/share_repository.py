@@ -5,7 +5,7 @@ from sqlmodel import Session, select, delete
 from app.models.share import LabelShare, NoteShare
 
 
-class Share_Repository:
+class ShareRepository:
     def __init__(self, db: Session):
         self.db = db
 
@@ -77,7 +77,7 @@ class Share_Repository:
 
         return self.db.exec(query).first() is not None
 
-    def has_note_share(
+    def has_any_label_share(
         self, label_ids: List[int], user_id: int, role: str | None = None
     ) -> bool:
 
